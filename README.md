@@ -1,6 +1,7 @@
-# Mail Module for asynchronous mail shipping
+# Post Office
 
-Persists the mail in a database and configures a scheduled task to actually send it.
+Bring your mail to the post office. It will be stored and a postal worker will deliver it.
+
 This module is auto configured and depends on spring mail.
 
 Currently only MongoDB is supported. For other databases implement the `MailStorage` interface.
