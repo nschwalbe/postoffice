@@ -1,7 +1,7 @@
 # Post Office
 
 Bring your mail to the post office. It will be stored and a postal worker will deliver it.
-Because of the always recurring task in every project to store a mail and send it out with a worker I extracted it as a 
+Because of the always recurring task in every project to store a mail and send it out with a worker I extracted this as a 
 module.
 
 This module is auto configured and depends on spring mail.
@@ -68,7 +68,7 @@ public class MyMailer {
 
             MimeMessage mimeMessage = mailService.createMimeMessage(subject, from, to, content, true);
 
-            mailService.scheduleMail(mimeMessage);
+            mailService.postMail(mimeMessage);
 
         } catch (Exception e) {
             log.error("Could not create mail!", e);
