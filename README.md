@@ -47,13 +47,13 @@ Define a Mailer class in your project and inject the `MailService`.
 @Component
 public class MyMailer {
 
-    private final MailService mailService;
+    private final PostOffice postOffice;
     private final TemplateEngine templateEngine;
     private final MessageSource messageSource;
 
     @Autowired
-    public MyMailer(MailService mailService, TemplateEngine templateEngine, Environment environment, MessageSource messageSource) {
-        this.mailService = mailService;
+    public MyMailer(PostOffice postOffice, TemplateEngine templateEngine, Environment environment, MessageSource messageSource) {
+        this.postOffice = postOffice;
         this.templateEngine = templateEngine;
         this.messageSource = messageSource;
     }
@@ -66,9 +66,9 @@ public class MyMailer {
             String subject = createSubject();
             String content = createContent(ctx);
 
-            MimeMessage mimeMessage = mailService.createMimeMessage(subject, from, to, content, true);
+            MimeMessage mimeMessage = postOffice.createMimeMessage(subject, from, to, content, true);
 
-            mailService.postMail(mimeMessage);
+            postOffice.postMail(mimeMessage);
 
         } catch (Exception e) {
             log.error("Could not create mail!", e);
