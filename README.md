@@ -8,9 +8,9 @@ Currently only MongoDB is supported. For other databases implement the `MailStor
 ## Installation
 
         <dependency>
-            <groupId>de.upsource</groupId>
-            <artifactId>spring-mailing</artifactId>
-            <version>1.0.0</version>
+            <groupId>de.nschwalbe</groupId>
+            <artifactId>postoffice</artifactId>
+            <version>0.1.0</version>
         </dependency>
 
 ## Configuration
