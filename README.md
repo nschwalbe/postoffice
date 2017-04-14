@@ -77,5 +77,5 @@ public class MyMailer {
 }
 ```
 
-[![Release](https://jitpack.io/v/nschwalbe/postoffice.svg)]
+[![Release](https://jitpack.io/v/nschwalbe/postoffice.svg?style=flat-square)]
 (https://jitpack.io/#nschwalbe/postoffice)
