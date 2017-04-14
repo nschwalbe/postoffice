@@ -10,7 +10,32 @@ Currently only MongoDB is supported. For other databases implement the `MailStor
 
 ## Installation
 
-TODO maven dependency from github https://jitpack.io/
+[![Release](https://jitpack.io/v/nschwalbe/postoffice.svg?style=flat-square)](https://jitpack.io/#nschwalbe/postoffice)
+
+The module is build by jitpack and can be downloaded with maven or gradle.
+
+Add the jitpack repository:
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+And dependency:
+
+```xml
+<dependency>
+    <groupId>com.github.nschwalbe</groupId>
+    <artifactId>postoffice</artifactId>
+    <version>develop-SNAPSHOT</version>
+</dependency>
+```
+
+For more information like gradle see here: <https://jitpack.io/#nschwalbe/postoffice>
 
 
 ## Configuration
@@ -77,4 +102,3 @@ public class MyMailer {
 }
 ```
 
-[![Release](https://jitpack.io/v/nschwalbe/postoffice.svg?style=flat-square)](https://jitpack.io/#nschwalbe/postoffice)
