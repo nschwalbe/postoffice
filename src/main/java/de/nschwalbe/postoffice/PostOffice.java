@@ -2,6 +2,7 @@ package de.nschwalbe.postoffice;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,6 +32,38 @@ public class PostOffice {
     public PostOffice(MailStorage mailStorage, JavaMailSender mailSender) {
         this.mailStorage = mailStorage;
         this.mailSender = mailSender;
+    }
+
+    /**
+     * Creates a mail, stores it and sends it out later. This method returns immediately and does not wait for the mail server.
+     *
+     * @param subject the mail subject.
+     * @param from the sender address.
+     * @param to the recipient.
+     * @param content the mail body.
+     * @param isHtml true if mail body is html, if it is plain text set to false.
+     * @return the persisted mail
+     * @throws MessagingException if message creation failed due to some error.
+     */
+    public PersistedMail postMail(String subject, MailAddress from, MailAddress to, String content, boolean isHtml) throws MessagingException {
+        MimeMessage mimeMessage = createMimeMessage(subject, from, Collections.singletonList(to), content, isHtml);
+        return postMail(mimeMessage);
+    }
+
+    /**
+     * Creates a mail, stores it and sends it out later. This method returns immediately and does not wait for the mail server.
+     *
+     * @param subject the mail subject.
+     * @param from the sender address.
+     * @param to the recipient.
+     * @param html the mail body html part.
+     * @param text the mail body text part.
+     * @return the persisted mail.
+     * @throws MessagingException if message creation failed due to some error.
+     */
+    public PersistedMail postMail(String subject, MailAddress from, MailAddress to, String html, String text) throws MessagingException {
+        MimeMessage mimeMessage = createMimeMessage(subject, from, Collections.singletonList(to), html, text);
+        return postMail(mimeMessage);
     }
 
     /**
