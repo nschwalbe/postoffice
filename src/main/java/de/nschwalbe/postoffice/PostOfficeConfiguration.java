@@ -3,6 +3,7 @@ package de.nschwalbe.postoffice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
@@ -21,14 +22,17 @@ public class PostOfficeConfiguration {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private Environment env;
+
     @Bean
-    public PostOffice mailService(MailStorage mailStorage) {
+    public PostOffice postOffice(MailStorage mailStorage) {
         return new PostOffice(mailStorage, javaMailSender);
     }
 
-    @Bean("mailSendingTriggerTask")
-    public MailSendingTriggerTaskFactory mailSendingTriggerTaskFactory(MailStorage mailStorage) {
-        return new MailSendingTriggerTaskFactory(mailStorage, javaMailSender);
+    @Bean("sendMailTask")
+    public SendMailTaskFactory sendMailTaskFactory(MailStorage mailStorage) {
+        return new SendMailTaskFactory(mailStorage, javaMailSender, env);
     }
 
     @EnableScheduling
@@ -36,13 +40,12 @@ public class PostOfficeConfiguration {
     static class SchedulerConfiguration implements SchedulingConfigurer {
 
         @Autowired
-        private TriggerTask mailSendingTriggerTask;
+        private TriggerTask sendMailTask;
 
-        // TODO not for test
         @Override
         public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
             try {
-                taskRegistrar.addTriggerTask(mailSendingTriggerTask);
+                taskRegistrar.addTriggerTask(sendMailTask);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

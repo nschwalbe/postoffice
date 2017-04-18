@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
@@ -27,14 +28,16 @@ import org.springframework.scheduling.config.TriggerTask;
  * @author Nathanael Schwalbe
  * @since 05.04.2017
  */
-class MailSendingTriggerTaskFactory extends AbstractFactoryBean<TriggerTask> {
+class SendMailTaskFactory extends AbstractFactoryBean<TriggerTask> {
 
     private final MailStorage mailStorage;
     private final JavaMailSender javaMailSender;
+    private final Environment env;
 
-    MailSendingTriggerTaskFactory(MailStorage mailStorage,  JavaMailSender javaMailSender) {
+    SendMailTaskFactory(MailStorage mailStorage, JavaMailSender javaMailSender, Environment env) {
         this.mailStorage = mailStorage;
         this.javaMailSender = javaMailSender;
+        this.env = env;
     }
 
     @Override
@@ -44,18 +47,20 @@ class MailSendingTriggerTaskFactory extends AbstractFactoryBean<TriggerTask> {
 
     @Override
     protected TriggerTask createInstance() throws Exception {
-        MailSendingTrigger trigger = new MailSendingTrigger();
-        MailSendingTask task = new MailSendingTask(mailStorage, javaMailSender, trigger);
+        SendMailTrigger trigger = new SendMailTrigger(env.getProperty("postoffice.worker.delay", Integer.class, 10));
+        SendMailTask task = new SendMailTask(mailStorage, javaMailSender, trigger);
         return new TriggerTask(task, trigger);
     }
 
-    static class MailSendingTrigger implements Trigger {
+    static class SendMailTrigger implements Trigger {
 
-        // seconds
-        private int delay = 30;
+        private int defaultDelay;
+        private int delay;
 
-        int getDelay() {
-            return delay;
+
+        SendMailTrigger(int delay) {
+            this.defaultDelay = delay;
+            this.delay = delay;
         }
 
         // try again in 30s, then wait 60s, then wait 90s ...
@@ -70,7 +75,7 @@ class MailSendingTriggerTaskFactory extends AbstractFactoryBean<TriggerTask> {
 
 
         void resetDelay() {
-            delay = 30;
+            delay = defaultDelay;
         }
 
         @Override
@@ -90,15 +95,15 @@ class MailSendingTriggerTaskFactory extends AbstractFactoryBean<TriggerTask> {
         }
     }
 
-    static class MailSendingTask implements Runnable {
+    static class SendMailTask implements Runnable {
 
-        private Logger log = LoggerFactory.getLogger(MailSendingTask.class);
+        private Logger log = LoggerFactory.getLogger(SendMailTask.class);
 
         private final MailStorage mailStorage;
         private final JavaMailSender javaMailSender;
-        private final MailSendingTrigger trigger;
+        private final SendMailTrigger trigger;
 
-        MailSendingTask(MailStorage mailStorage, JavaMailSender javaMailSender,  MailSendingTrigger trigger) {
+        SendMailTask(MailStorage mailStorage, JavaMailSender javaMailSender,  SendMailTrigger trigger) {
             this.mailStorage = mailStorage;
             this.javaMailSender = javaMailSender;
             this.trigger = trigger;
